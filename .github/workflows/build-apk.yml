@@ -56,7 +56,10 @@ jobs:
           else
             "$GITHUB_WORKSPACE/gradle-8.9/bin/gradle" assembleDebug
           fi
-
+      - name: Enable AndroidX
+        run: |
+          echo "android.useAndroidX=true" >> "$ANDROID_PROJECT_DIR/gradle.properties"
+          echo "android.enableJetifier=true" >> "$ANDROID_PROJECT_DIR/gradle.properties"
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:

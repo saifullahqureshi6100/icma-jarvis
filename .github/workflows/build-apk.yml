@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:    
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,9 +20,8 @@ jobs:
             echo "Android project ZIP not found!"
             exit 1
           fi
+
           unzip -q icma-jarvis-repo.zip -d extracted
-          echo "Files inside ZIP:"
-          find extracted -maxdepth 5 -type f | head -100
 
           PROJECT_FILE=$(find extracted -type f \( -name settings.gradle -o -name settings.gradle.kts \) | head -1)
 
@@ -44,10 +43,13 @@ jobs:
           wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip
           unzip -q gradle-8.9-bin.zip
 
-      - name: Build Android APK       - name: Enable AndroidX
+      - name: Enable AndroidX
         run: |
+          touch "$ANDROID_PROJECT_DIR/gradle.properties"
           echo "android.useAndroidX=true" >> "$ANDROID_PROJECT_DIR/gradle.properties"
           echo "android.enableJetifier=true" >> "$ANDROID_PROJECT_DIR/gradle.properties"
+
+      - name: Build Android APK
         run: |
           cd "$ANDROID_PROJECT_DIR"
           if [ -f "./gradlew" ]; then
@@ -56,15 +58,10 @@ jobs:
           else
             "$GITHUB_WORKSPACE/gradle-8.9/bin/gradle" assembleDebug
           fi
-      - name: Enable AndroidX
-        run: |
-          echo "android.useAndroidX=true" >> "$ANDROID_PROJECT_DIR/gradle.properties"
-          echo "android.enableJetifier=true" >> "$ANDROID_PROJECT_DIR/gradle.properties"
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ICMA-Jarvis-APK
           path: "**/build/outputs/apk/debug/*.apk"
           if-no-files-found: error
-
-.github/workflows/Apk

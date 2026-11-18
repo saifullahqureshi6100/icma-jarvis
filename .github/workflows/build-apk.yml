@@ -7,10 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:      - name: Enable AndroidX
-        run: |
-          echo "android.useAndroidX=true" >> "$ANDROID_PROJECT_DIR/gradle.properties"
-          echo "android.enableJetifier=true" >> "$ANDROID_PROJECT_DIR/gradle.properties"
+  build:    
     runs-on: ubuntu-latest
 
     steps:
@@ -47,7 +44,10 @@ jobs:
           wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip
           unzip -q gradle-8.9-bin.zip
 
-      - name: Build Android APK
+      - name: Build Android APK       - name: Enable AndroidX
+        run: |
+          echo "android.useAndroidX=true" >> "$ANDROID_PROJECT_DIR/gradle.properties"
+          echo "android.enableJetifier=true" >> "$ANDROID_PROJECT_DIR/gradle.properties"
         run: |
           cd "$ANDROID_PROJECT_DIR"
           if [ -f "./gradlew" ]; then
